@@ -4,8 +4,8 @@
 #include <stdbool.h>
 #include <math.h>
 
-
 enum month {january,february,march,april,may,june,july,august,september,october,november,december, dependencies}; // {0,1,2,3,4,5,6,7,8,9,10,11}
+
 
 
 struct task
@@ -30,7 +30,6 @@ struct line{
 void functionEdit(struct task tasks[], int nTasks);
 bool functionTest (struct task tasks[], int nTasks);
 bool hasCircularDependency(struct task tasks[], int nTasks, int taskIndex, bool visited[]);
-void printMonths();
 void printFunction(struct task tasks[], int ntasks);
 
 bool functionTest (struct task tasks[], int nTasks){
@@ -147,8 +146,8 @@ int main(void){
         scanf("%d", &nTasks);
         if(nTasks > 10 || nTasks < 1)
             printf("Please enter at least 1 task and at most 10 tasks\n");
+        	fflush(stdout);
     } while(nTasks > 10 || nTasks < 1);
-    /* TODO: Ensuring if the user enters characters that it woill not loop indefinitely */
 
     struct task tasks[nTasks];  /* Array of tasks Suggestion creating a blank struct such as in lecture 11 page 10: struct task
     							blank = "", 0, 0 , 0 , 0 */
@@ -167,6 +166,7 @@ int main(void){
          * TODO: Ensuring the user does not exceed 20 characters to avoid a security breach */
 
         printf("Enter the task name (max 20 characters)\n");
+        fflush(stdout);
         scanf("%s", tasks[i].taskName);
 
         /*Force the user to enter a valid starting month*/
@@ -194,28 +194,33 @@ int main(void){
         } while(tasks[i].endMonth > 12 || tasks[i].endMonth < 1 || tasks[i].endMonth < tasks[i].startMonth); // had start month instead of end month and added last case
 
         printf("Enter number of dependencies:\n");
+        fflush(stdout);
         scanf("%d", &tasks[i].numDependencies);
 
         if(tasks[i].numDependencies > nTasks - 1){
             printf("must be less than number of tasks\n");
             fflush(stdout);
             printf("Enter number of dependencies:\n");
+            fflush(stdout);
             scanf("%d", &tasks[i].numDependencies);
         }
 
         for(int j = 0; j < tasks[i].numDependencies; j++){
             printf("Enter dependency:\n");
+            fflush(stdout);
             scanf("%d", &tasks[i].dependentTasks[j]);
             if(tasks[i].dependentTasks[j] > nTasks){
                 printf("must be less than number of tasks\n");
                 fflush(stdout);
                 printf("Enter dependency:\n");
+                fflush(stdout);
                 scanf("%d", &tasks[i].dependentTasks[j]);
             }
         }
     }
     int userChoice;
     printf("enter 1 to edit the Gantt, 2 to test if your gant is possible, 3 to quit:\n");
+    fflush(stdout);
     scanf("%d", &userChoice);
     switch (userChoice) {
         case 1:
@@ -224,9 +229,11 @@ int main(void){
         case 2:
             if(functionTest(tasks, nTasks)){
                 printf("no circular dependencies found\n");
+                fflush(stdout);
             }
             else if(!functionTest(tasks, nTasks)){
                 printf("Gantt not possible due to circular dependency\n");
+                fflush(stdout);
             }
             break;
         case 3:
@@ -235,102 +242,117 @@ int main(void){
         default:
             break;
     }
+
     printMonths();
     printFunction(tasks, nTasks);
 
 
-}
-void printMonths(){
-	enum month today;
-	today = january;
+    }
+    void printMonths(){
+    	enum month today;
+    	today = january;
 
-	/*Length of line*/
-	int segment = 200;
+    	/*Length of line*/
+    	int segment = 200;
 
-	/*Print 200 "_" as a continuous line*/
-	for(int i = 0; i < segment; i++){
-		printf("_");
-		}
-	puts("");
-	printf("%-21s", " ");
-	for(today; today < dependencies + 1; today++){
+    	/*Print 200 "_" as a continuous line*/
+    	for(int i = 0; i < segment; i++){
+    		printf("_");
+    		}
+    	puts("");
+    	printf("%-21s", " ");
+    	for(today; today < dependencies + 1; today++){
 
-	switch(today){
-					case(january):
-						printf("%-10s","|January");
-						break;
-					case(february):
-						printf("%-10s","|February");
-						break;
-					case(march):
-						printf("%-10s","|March");
-						break;
-					case(april):
-						printf("%-10s","|April");
-						break;
-					case(may):
-						printf("%-10s","|May");
-						break;
-			        case(june):
-						printf("%-10s","|June");
-						break;
-			        case(july):
-						printf("%-10s","|July");
-						break;
-			        case(august):
-						printf("%-10s","|August");
-						break;
-			        case(september):
-						printf("%-10s","|September");
-						break;
-			        case(october):
-						printf("%-10s","|October");
-						break;
-			        case(november):
-						printf("%-10s","|November");
-						break;
-			         case(december):
-						printf("%-10s","|December");
-						break;
-			         case(dependencies):
-			        		 printf("%-10s","|Dependencies");
-			         		 break;
+    	switch(today){
+    					case(january):
+    						printf("%-10s","|January");
+    						break;
+    					case(february):
+    						printf("%-10s","|February");
+    						break;
+    					case(march):
+    						printf("%-10s","|March");
+    						break;
+    					case(april):
+    						printf("%-10s","|April");
+    						break;
+    					case(may):
+    						printf("%-10s","|May");
+    						break;
+    			        case(june):
+    						printf("%-10s","|June");
+    						break;
+    			        case(july):
+    						printf("%-10s","|July");
+    						break;
+    			        case(august):
+    						printf("%-10s","|August");
+    						break;
+    			        case(september):
+    						printf("%-10s","|September");
+    						break;
+    			        case(october):
+    						printf("%-10s","|October");
+    						break;
+    			        case(november):
+    						printf("%-10s","|November");
+    						break;
+    			         case(december):
+    						printf("%-10s","|December");
+    						break;
+    			         case(dependencies):
+    			        		 printf("%-10s","|Dependencies");
+    			         		 break;
 
-					default:
-						break;
+    					default:
+    						break;
 
-				}
+    				}
 
-	}
-	puts("");
-
-
-}
-void printFunction(struct task tasks[], int nTasks){
-		/*Length of line*/
-		int segment = 200;
-		enum month today;
-
-		for(int i = 0; i < (int) segment; i++){
-					printf("-");
-				}
+    	}
+    	puts("");
 
 
+    }
+    void printFunction(struct task tasks[], int nTasks){
+    		/*Length of line*/
+    		int segment = 200;
+    		enum month today;
 
-		for(int i = 0; i < nTasks; i++){
-			printf("\n");
-			printf("%-21s", tasks[i].taskName);
-			for(today = january; today < dependencies + 1; today++){
-				printf("%-10s","|");
-			}
-			puts("");
-			for(int i = 0; i < (int) segment; i++){
-								printf("-");
-							}
+    		for(int i = 0; i < (int) segment; i++){
+    					printf("-");
+    				}
 
 
-			/*TO COMPLETE: Counting the underscores will help to print the "|"
-			 * I am thinking about a blank struct for that as well
-			 */
-		}
-}
+
+    		for(int i = 0; i < nTasks; i++){
+    			printf("\n");
+    			printf("%-21s", tasks[i].taskName);
+    			for(today = january; today < dependencies + 1; today++){
+    				if (tasks[i].startMonth - 1 == today){
+    					printf("%-10s","|   XXX");
+    					while(tasks[i].startMonth != tasks[i].endMonth){
+    					printf("%-10s","|   XXX");
+    					today++;
+    					tasks[i].startMonth++;
+    					}
+    				}
+    				else {printf("%-10s","|");}
+    			}
+    			if(tasks[i].numDependencies > 0){
+    				for(int j = 0; j < tasks[i].numDependencies; j++){
+    					printf("%d ", tasks[i].dependentTasks[j]);
+    				}
+    			}
+
+    			puts("");
+    			for(int i = 0; i < (int) segment; i++){
+    								printf("-");
+    							}
+
+
+    			/*TO COMPLETE: Counting the underscores will help to print the "|"
+    			 * I am thinking about a blank struct for that as well
+    			 */
+    		}
+    }
