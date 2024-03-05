@@ -5,7 +5,7 @@
 #include <math.h>
 
 
-
+enum month {january,february,march,april,may,june,july,august,september,october,november,december, dependencies}; // {0,1,2,3,4,5,6,7,8,9,10,11}
 
 
 struct task
@@ -30,6 +30,7 @@ struct line{
 void functionEdit(struct task tasks[], int nTasks);
 bool functionTest (struct task tasks[], int nTasks);
 bool hasCircularDependency(struct task tasks[], int nTasks, int taskIndex, bool visited[]);
+void printMonths();
 void printFunction(struct task tasks[], int ntasks);
 
 bool functionTest (struct task tasks[], int nTasks){
@@ -147,12 +148,13 @@ int main(void){
         if(nTasks > 10 || nTasks < 1)
             printf("Please enter at least 1 task and at most 10 tasks\n");
     } while(nTasks > 10 || nTasks < 1);
+    /* TODO: Ensuring if the user enters characters that it woill not loop indefinitely */
 
     struct task tasks[nTasks];  /* Array of tasks Suggestion creating a blank struct such as in lecture 11 page 10: struct task
     							blank = "", 0, 0 , 0 , 0 */
 
     /*Create a blank task*/
-    struct task blank = { " ", 0 , 0, 0, 0};
+    struct task blank = { " ", 0 , 0, 0, {0}};
 
     /*Initialize all the tasks with blank*/
     for(int i = 0; i < nTasks; i++){
@@ -233,49 +235,100 @@ int main(void){
         default:
             break;
     }
-
+    printMonths();
     printFunction(tasks, nTasks);
 
 
 }
-void printFunction(struct task tasks[], int nTasks){
-		/*Replaced enum with pointer of strings because it is easier for me to iterate through*/
-		const char *month[12] = {"January","February","March","April","May","June","July","August",
-								"September","October","November","December"};
+void printMonths(){
+	enum month today;
+	today = january;
 
+	/*Length of line*/
+	int segment = 200;
+
+	/*Print 200 "_" as a continuous line*/
+	for(int i = 0; i < segment; i++){
+		printf("_");
+		}
+	puts("");
+	printf("%-21s", " ");
+	for(today; today < dependencies + 1; today++){
+
+	switch(today){
+					case(january):
+						printf("%-10s","|January");
+						break;
+					case(february):
+						printf("%-10s","|February");
+						break;
+					case(march):
+						printf("%-10s","|March");
+						break;
+					case(april):
+						printf("%-10s","|April");
+						break;
+					case(may):
+						printf("%-10s","|May");
+						break;
+			        case(june):
+						printf("%-10s","|June");
+						break;
+			        case(july):
+						printf("%-10s","|July");
+						break;
+			        case(august):
+						printf("%-10s","|August");
+						break;
+			        case(september):
+						printf("%-10s","|September");
+						break;
+			        case(october):
+						printf("%-10s","|October");
+						break;
+			        case(november):
+						printf("%-10s","|November");
+						break;
+			         case(december):
+						printf("%-10s","|December");
+						break;
+			         case(dependencies):
+			        		 printf("%-10s","|Dependencies");
+			         		 break;
+
+					default:
+						break;
+
+				}
+
+	}
+	puts("");
+
+
+}
+void printFunction(struct task tasks[], int nTasks){
 		/*Length of line*/
 		int segment = 200;
-
-		/*Print 200 "_" as a continuous line*/
-		for(int i = 0; i < segment; i++){
-			printf("_");
-		}
-		puts("");
-		/*Leave the first 22 characters free, and then print "|" and the months and the dependencies*/
-		for(int i = 0, j = 0; i < (int) segment; i++){
-			printf(" ");
-			if (i >= 22 && i < 34){
-				printf("| %s", month[j++], i);
-			}
-			else if(i == 35){
-				printf("| %s", "Dependencies");
-			}
-
-		}
-		printf("\n");
-		/*Print the first task so far and trying to repeat the same step as in the previous printed
-		 * line within the months*/
+		enum month today;
 
 		for(int i = 0; i < (int) segment; i++){
 					printf("-");
 				}
 
-		printf("\n");
 
-		for(int i = 0, j = 0; i < nTasks && j < segment; j++){
 
-			printf("%s%d", tasks[i].taskName, j);
-			j = strlen(tasks[i++].taskName);
+		for(int i = 0; i < nTasks; i++){
+			printf("\n");
+			printf("%-21s", tasks[i].taskName);
+			for(today = january; today < dependencies + 1; today++){
+				printf("%-10s","|");
+			}
+			puts("");
+			for(int i = 0; i < (int) segment; i++){
+								printf("-");
+							}
+
+
 			/*TO COMPLETE: Counting the underscores will help to print the "|"
 			 * I am thinking about a blank struct for that as well
 			 */
