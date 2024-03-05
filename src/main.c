@@ -31,6 +31,7 @@ void functionEdit(struct task tasks[], int nTasks);
 bool functionTest (struct task tasks[], int nTasks);
 bool hasCircularDependency(struct task tasks[], int nTasks, int taskIndex, bool visited[]);
 void printFunction(struct task tasks[], int ntasks);
+void printMonths();
 
 bool functionTest (struct task tasks[], int nTasks){
     bool visited[nTasks]; //array to track which tasks have been checked
@@ -148,6 +149,7 @@ int main(void){
             printf("Please enter at least 1 task and at most 10 tasks\n");
         	fflush(stdout);
     } while(nTasks > 10 || nTasks < 1);
+    /* TODO: Ensuring if the user enters characters that it woill not loop indefinitely */
 
     struct task tasks[nTasks];  /* Array of tasks Suggestion creating a blank struct such as in lecture 11 page 10: struct task
     							blank = "", 0, 0 , 0 , 0 */
