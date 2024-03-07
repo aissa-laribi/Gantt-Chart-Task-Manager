@@ -222,15 +222,18 @@ void exampleFunction (struct task example[]){
 void functionEdit(struct task tasks[], int nTasks){    //use same layout as user input function to edit task in array
     char change[20];
     int taskToChange, found = 0;
+    struct task blank = { " ", 0 , 0, 0, {0}};
     printf("Please enter the task name you want to change exactly\n" );
     fflush(stdout);
     scanf("%s", change);
     for(taskToChange = 0; taskToChange < nTasks; taskToChange++){
         if(strcmp(change, tasks[taskToChange].taskName) == 0){ //find which task to edit using task name
             found = 1;
+            tasks[taskToChange] = blank;
             printf("Enter the new task name (max 20 characters)\n");
             fflush(stdout);
-            scanf("%s", &tasks[taskToChange].taskName[20]);
+            scanf("%s", &tasks[taskToChange].taskName);
+
 
             do{
                 printf("Enter start month:\n");
