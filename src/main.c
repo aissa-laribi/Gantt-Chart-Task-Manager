@@ -431,7 +431,7 @@ void functionEdit(struct task tasks[], int nTasks){    //use same layout as user
     	 int ascii = 0;
     	    printf("\n\nenter 1 to see ascii art");
     	    fflush(stdout);
-    	    scanf("%d", ascii);
+    	    scanf("%d", &ascii);
     	if (ascii == 1){
     	  printf("⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠿⠿⠿⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿\n"          //lightning mcqueen!!!
     	                  "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠋⣉⣁⣤⣤⣶⣾⣿⣿⣶⡄⢲⣯⢍⠁⠄⢀⢹⣿\n"
