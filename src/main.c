@@ -321,12 +321,34 @@ void printFunction(struct task tasks[], int nTasks){
 			printf("\n");
 			printf("%-21s", tasks[i].taskName);
 			for(today = january; today < dependencies + 1; today++){
-				printf("%-10s","|");
+				if(today >= tasks[i].startMonth && today <= tasks[i].endMonth){
+					printf( "%-10s","|  XXX");
+				} else{
+					printf("%-10s","|");
+				}
 			}
 			puts("");
 			for(int i = 0; i < (int) segment; i++){
-								printf("-");
-							}
+				printf("-");
+			}
+		/*for(int i = 0; i < nTasks; i++){
+                printf("\n");
+                printf("%-21s", tasks[i].taskName);
+                for(today = january; today < dependencies + 1; today++){
+                    if (tasks[i].startMonth - 1 == today){
+                        printf("%-10s","|   XXX");
+                        while(tasks[i].startMonth != tasks[i].endMonth){
+                        printf("%-10s","|   XXX");
+                        today++;
+                        tasks[i].startMonth++;
+                        }
+                    }
+                    else {printf("%-10s","|");}
+                }
+                puts("");
+                for(int i = 0; i < (int) segment; i++){
+                                    printf("-");
+                                }*/
 
 
 			/*TO COMPLETE: Counting the underscores will help to print the "|"
