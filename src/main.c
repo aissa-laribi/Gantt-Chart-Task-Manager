@@ -11,7 +11,7 @@ enum month {january,february,march,april,may,june,july,august,september,october,
 
 struct task
 {
-    char taskName[20];
+    char taskName[21];
     int startMonth;
     int endMonth;
     int numDependencies;
