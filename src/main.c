@@ -25,10 +25,11 @@ bool hasCircularDependency(struct task tasks[], int nTasks, int taskIndex, bool 
 void printFunction(struct task tasks[], int ntasks);
 void printMonths();
 void exampleFunction(struct task example[]);
-void ascii_art_andrew();
+int menuFunction(struct task tasks[], int nTasks);
+void ascii_art();
 
 
-struct task example[]={ 				//initialise example task struct
+struct task example[]={                 //initialise example task struct
         {"get_funding", 1, 1, 0, {}},
         {"find_empoyees", 2, 2, 1, {1}},
         {"buy_parts", 3, 3, 2, {1, 2}},
@@ -64,7 +65,7 @@ int main(void){
         scanf("%d", &end);
         } while(end < 1 || end > 2);
         if (end == 2){
-        	return 0;
+            return 0;
         }
 
     }
@@ -160,6 +161,8 @@ int main(void){
 
 
     ascii_art();
+
+    return 0;
     }
 
 
@@ -374,7 +377,7 @@ void functionEdit(struct task tasks[], int nTasks){    //use same layout as user
                 printf("%-21s", tasks[i].taskName); // print task name with correct layout
                 for(today = january; today < dependencies; today++){
                     if (tasks[i].startMonth - 1 == today){ // if task starts here
-                        printf("%-10s","|   XXX");		   // print 'XXX' in corresponding box
+                        printf("%-10s","|   XXX");         // print 'XXX' in corresponding box
                         while(tasks[i].startMonth != tasks[i].endMonth){ //until it reaches end month
                         printf("%-10s","|   XXX");
                         today++;
@@ -412,6 +415,7 @@ void functionEdit(struct task tasks[], int nTasks){    //use same layout as user
                 if(functionTest(tasks, nTasks)){
                     printf("no circular dependencies found\n");
                     fflush(stdout);
+
                 }
                 else if(!functionTest(tasks, nTasks)){
                     printf("Gantt not possible due to circular dependency\n");
@@ -428,22 +432,23 @@ void functionEdit(struct task tasks[], int nTasks){    //use same layout as user
   }
 
     void ascii_art(){
-    	 int ascii = 0;
-    	    printf("\n\nenter 1 to see ascii art");
-    	    fflush(stdout);
-    	    scanf("%d", &ascii);
-    	if (ascii == 1){
-    	  printf("⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠿⠿⠿⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿\n"          //lightning mcqueen!!!
-    	                  "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠋⣉⣁⣤⣤⣶⣾⣿⣿⣶⡄⢲⣯⢍⠁⠄⢀⢹⣿\n"
-    	                  "⣿⣿⣿⣿⣿⣿⣿⣿⣿⢯⣾⣿⣿⣏⣉⣹⠿⠇⠄⠽⠿⢷⡈⠿⠇⣀⣻⣿⡿⣻\n"
-    	                  "⣿⣿⡿⠿⠛⠛⠛⢛⡃⢉⢣⡤⠤⢄⡶⠂⠄⠐⣀⠄⠄⠄⠄⠄⡦⣿⡿⠛⡇⣼\n"
-    	                  "⡿⢫⣤⣦⠄⠂⠄⠄⠄⠄⠄⠄⠄⠄⠠⠺⠿⠙⠋⠄⠄⠄⠢⢄⠄⢿⠇⠂⠧⣿\n"
-    	                  "⠁⠄⠈⠁⠄⢀⣀⣀⣀⣀⣠⣤⡤⠴⠖⠒⠄⠄⠄⠄⠄⠄⠄⠄⠄⠘⢠⡞⠄⣸\n"
-    	                  "⡀⠄⠄⠄⠄⠄⠤⠭⠦⠤⠤⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⣂⣿\n"
-    	                  "⣷⡀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢳⠄⠄⢀⠈⣠⣤⣤⣼⣿\n"
-    	                  "⣿⣿⣷⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣴⣶⣶⣶⣄⡀⠄⠈⠑⢙⣡⣴⣿⣿⣿⣿⣿\n"
-    	                  "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿\n"
-    	                  );
+         int ascii = 0;
+            printf("\n\nenter 1 to see ascii art");
+            fflush(stdout);
+            scanf("%d", &ascii);
+        if (ascii == 1){
+          printf("⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠿⠿⠿⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿\n"          //lightning mcqueen!!!
+                          "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠋⣉⣁⣤⣤⣶⣾⣿⣿⣶⡄⢲⣯⢍⠁⠄⢀⢹⣿\n"
+                          "⣿⣿⣿⣿⣿⣿⣿⣿⣿⢯⣾⣿⣿⣏⣉⣹⠿⠇⠄⠽⠿⢷⡈⠿⠇⣀⣻⣿⡿⣻\n"
+                          "⣿⣿⡿⠿⠛⠛⠛⢛⡃⢉⢣⡤⠤⢄⡶⠂⠄⠐⣀⠄⠄⠄⠄⠄⡦⣿⡿⠛⡇⣼\n"
+                          "⡿⢫⣤⣦⠄⠂⠄⠄⠄⠄⠄⠄⠄⠄⠠⠺⠿⠙⠋⠄⠄⠄⠢⢄⠄⢿⠇⠂⠧⣿\n"
+                          "⠁⠄⠈⠁⠄⢀⣀⣀⣀⣀⣠⣤⡤⠴⠖⠒⠄⠄⠄⠄⠄⠄⠄⠄⠄⠘⢠⡞⠄⣸\n"
+                          "⡀⠄⠄⠄⠄⠄⠤⠭⠦⠤⠤⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⣂⣿\n"
+                          "⣷⡀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢳⠄⠄⢀⠈⣠⣤⣤⣼⣿\n"
+                          "⣿⣿⣷⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣴⣶⣶⣶⣄⡀⠄⠈⠑⢙⣡⣴⣿⣿⣿⣿⣿\n"
+                          "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿\n"
+                          );
 
     }
     }
+
