@@ -25,10 +25,12 @@ bool hasCircularDependency(struct task tasks[], int nTasks, int taskIndex, bool 
 void printFunction(struct task tasks[], int ntasks);
 void printMonths();
 void exampleFunction(struct task example[]);
+void checkTestFunction(int end, int test);
+int menuFunction(struct task tasks[], int nTasks);
 void ascii_art_andrew();
 
 
-struct task example[]={ 				//initialise example task struct
+struct task example[]={
         {"get_funding", 1, 1, 0, {}},
         {"find_empoyees", 2, 2, 1, {1}},
         {"buy_parts", 3, 3, 2, {1, 2}},
@@ -41,21 +43,120 @@ struct task example[]={ 				//initialise example task struct
         {"set_up_civilization", 12, 12, 2, {8, 9}}
         };
 
+void exampleFunction (struct task example[]){
+    printMonths();
+    printFunction(example, 10);
+
+}
+
+bool functionTest (struct task tasks[], int nTasks){
+    bool visited[nTasks]; //array to track which tasks have been checked
+    // initialise all elements in array to false as none have been visited
+    for (int i = 0; i < nTasks; ++i) {
+        visited[i] = false;
+    }
+
+    for (int i = 0; i < nTasks; ++i) {
+        //if the ith task hasnt been visited/checked
+        if (!visited[i]) {
+            //we then use another function to check if this task has a circular dependancy
+            if (hasCircularDependency(tasks, nTasks, i, visited)) {
+                //it takes in i as the task index and visited(the array to tell us which tasks have been visited)
+                return false; //return false if circular dependency found
+            }
+        }
+    }
+    return true; // true if no circular dependancy found
+}
+
+bool hasCircularDependency(struct task tasks[], int nTasks, int taskIndex, bool visited[]){
+    visited[taskIndex] = true; //mark current task as visited
+    //iterate through all dependencies of current task
+    for (int i = 0; i < tasks[taskIndex].numDependencies; i++) {
+        int dependentTask = tasks[taskIndex].dependentTasks[i] - 1;
+        //if the dependant task isn't visited
+        if (!visited[dependentTask]) {
+            //recursively check for circular dependency starting from dependent task
+            if (hasCircularDependency(tasks, nTasks, dependentTask, visited)) {
+                return true;// circular dependency found
+            }
+        } else if (visited[dependentTask]) {
+            // If the dependent task is already visited, this indicates a circular dependency
+            return true; // Circular dependency found
+        }
+    }
+    //put it back to unvisited so that it can be visited again in other branches
+    visited[taskIndex] = false;
+    return false;
+}
 
 
 
+void functionEdit(struct task tasks[], int nTasks){
+    char change[20];
+    int taskToChange, found = 0;
+    printf("Please enter the task name you want to change exactly\n" );
+    fflush(stdout);
+    scanf("%s", change);
+    for(taskToChange = 0; taskToChange < nTasks; taskToChange++){
+        if(strcmp(change, tasks[taskToChange].taskName) == 0){
+            found = 1;
+            printf("Enter the new task name (max 20 characters)\n");
+            fflush(stdout);
+            scanf("%s", &tasks[taskToChange].taskName[20]);
 
-<<<<<<< HEAD
+            do{
+                printf("Enter start month:\n");
+                fflush(stdout);
+                scanf("%d", &tasks[taskToChange].startMonth);
+                if(tasks[taskToChange].startMonth > 12 || tasks[taskToChange].startMonth < 1){
+                    printf("number must be between 1 and 12\n");
+                    fflush(stdout);
+                }
+            } while(tasks[taskToChange].startMonth > 12 || tasks[taskToChange].startMonth < 1);
+
+            do{
+                printf("Enter end month:\n");
+                fflush(stdout);
+                scanf("%d", &tasks[taskToChange].endMonth);
+                if(tasks[taskToChange].endMonth > 12 || tasks[taskToChange].endMonth < 1 || tasks[taskToChange].startMonth > tasks[taskToChange].endMonth){
+                    printf("number must be between 1 and 12\n");
+                    fflush(stdout);
+                }
+            } while(tasks[taskToChange].endMonth > 12 || tasks[taskToChange].endMonth < 1 || tasks[taskToChange].endMonth < tasks[taskToChange].startMonth);
+
+            printf("Enter number of dependencies:\n");
+            fflush(stdout);
+            scanf("%d", &tasks[taskToChange].numDependencies);
+
+            if(tasks[taskToChange].numDependencies > nTasks - 1){
+                printf("must be less than number of tasks\n");
+                fflush(stdout);
+                printf("Enter number of dependencies:\n");
+                fflush(stdout);
+                scanf("%d", &tasks[taskToChange].numDependencies);
+            }
+
+            for(int j = 0; j < tasks[taskToChange].numDependencies; j++){
+                printf("Enter dependency:\n");
+                fflush(stdout);
+                scanf("%d", &tasks[taskToChange].dependentTasks[j]);
+                if(tasks[taskToChange].dependentTasks[j] > nTasks){
+                    printf("must be less than number of tasks\n");
+                    fflush(stdout);
+                    printf("Enter dependency:\n");
+                    fflush(stdout);
+                    scanf("%d", &tasks[taskToChange].dependentTasks[j]);
+                }
+            }
+
         }
     }
     if (!found){
         printf("Task not found");
     }
 }
-int menuFunction(struct task tasks[], int nTasks);
-=======
 
->>>>>>> 80fef29dd4ef1e33ae77f4b65e303db9ed39252a
 
 int main(void){
     int end = 0;
@@ -63,21 +164,7 @@ int main(void){
 
     printf("Welcome to Gantt generator\npress 1 to see an example of a Gantt or 2 to create your own:\n");
     fflush(stdout);
-    do {
-    scanf("%d", &test);
-    } while(test < 1 || test > 2);
-    if(test == 1){
-        exampleFunction(example);
 
-        do{printf("\nenter 1 to make your Gantt or 2 to exit:\n");
-        fflush(stdout);
-        scanf("%d", &end);
-        } while(end < 1 || end > 2);
-        if (end == 2){
-        	return 0;
-        }
-
-    }
 
     int nTasks;
 
@@ -169,136 +256,8 @@ int main(void){
 
 
 
-    ascii_art();
+    ascii_art_andrew();
     }
-
-
-
-
-
-bool functionTest (struct task tasks[], int nTasks){
-    bool visited[nTasks]; //array to track which tasks have been checked
-    // Initialize all elements in array to false as none have been visited
-    for (int i = 0; i < nTasks; ++i) {
-        visited[i] = false;
-    }
-
-    for (int i = 0; i < nTasks; ++i) {
-        //if the ith task hasn't been visited/checked
-        if (!visited[i]) {
-            //we then use another function to check if this task has a circular dependency
-            if (hasCircularDependency(tasks, nTasks, i, visited)) {
-                //it takes in i as the task index and visited(the array to tell us which tasks have been visited)
-                return false; //return false if circular dependency found
-            }
-        }
-    }
-    return true; // true if no circular dependency found
-}
-
-bool hasCircularDependency(struct task tasks[], int nTasks, int taskIndex, bool visited[]){
-    visited[taskIndex] = true; //mark current task as visited
-    //iterate through all dependencies of current task
-    for (int i = 0; i < tasks[taskIndex].numDependencies; i++) {
-        int dependentTask = tasks[taskIndex].dependentTasks[i] - 1;
-        //if the dependant task isn't visited
-        if (!visited[dependentTask]) {
-            //recursively check for circular dependency starting from dependent task
-            if (hasCircularDependency(tasks, nTasks, dependentTask, visited)) {
-                return true;// circular dependency found
-            }
-        } else if (visited[dependentTask]) {
-            // If the dependent task is already visited, this indicates a circular dependency
-            return true; // Circular dependency found
-        }
-    }
-    //put it back to unvisited so that it can be visited again in other branches
-    visited[taskIndex] = false;
-    return false;
-}
-
-
-
-
-
-void exampleFunction (struct task example[]){
-    printMonths();  //print first line
-    printFunction(example, 10); //print using example struct
-
-}
-
-
-
-void functionEdit(struct task tasks[], int nTasks){    //use same layout as user input function to edit task in array
-    char change[20];
-    int taskToChange, found = 0;
-    printf("Please enter the task name you want to change exactly\n" );
-    fflush(stdout);
-    scanf("%s", change);
-    for(taskToChange = 0; taskToChange < nTasks; taskToChange++){
-        if(strcmp(change, tasks[taskToChange].taskName) == 0){ //find which task to edit using task name
-            found = 1;
-            printf("Enter the new task name (max 20 characters)\n");
-            fflush(stdout);
-            scanf("%s", &tasks[taskToChange].taskName[20]);
-
-            do{
-                printf("Enter start month:\n");
-                fflush(stdout);
-                scanf("%d", &tasks[taskToChange].startMonth);
-                if(tasks[taskToChange].startMonth > 12 || tasks[taskToChange].startMonth < 1){
-                    printf("number must be between 1 and 12\n");
-                    fflush(stdout);
-                }
-            } while(tasks[taskToChange].startMonth > 12 || tasks[taskToChange].startMonth < 1);
-
-            do{
-                printf("Enter end month:\n");
-                fflush(stdout);
-                scanf("%d", &tasks[taskToChange].endMonth);
-                if(tasks[taskToChange].endMonth > 12 || tasks[taskToChange].endMonth < 1 || tasks[taskToChange].startMonth > tasks[taskToChange].endMonth){
-                    printf("number must be between 1 and 12\n");
-                    fflush(stdout);
-                }
-            } while(tasks[taskToChange].endMonth > 12 || tasks[taskToChange].endMonth < 1 || tasks[taskToChange].endMonth < tasks[taskToChange].startMonth);
-
-            printf("Enter number of dependencies:\n");
-            fflush(stdout);
-            scanf("%d", &tasks[taskToChange].numDependencies);
-
-            if(tasks[taskToChange].numDependencies > nTasks - 1){
-                printf("must be less than number of tasks\n");
-                fflush(stdout);
-                printf("Enter number of dependencies:\n");
-                fflush(stdout);
-                scanf("%d", &tasks[taskToChange].numDependencies);
-            }
-
-            for(int j = 0; j < tasks[taskToChange].numDependencies; j++){
-                printf("Enter dependency:\n");
-                fflush(stdout);
-                scanf("%d", &tasks[taskToChange].dependentTasks[j]);
-                if(tasks[taskToChange].dependentTasks[j] > nTasks){
-                    printf("must be less than number of tasks\n");
-                    fflush(stdout);
-                    printf("Enter dependency:\n");
-                    fflush(stdout);
-                    scanf("%d", &tasks[taskToChange].dependentTasks[j]);
-                }
-            }
-
-        }
-    }
-    if (!found){ // if task name doesn't match go back to menu
-        printf("Task not found");
-        menuFunction(tasks, nTasks);
-
-    }
-}
-
-
-
-
     void printMonths(){
         enum month today;
         today = january;
@@ -312,14 +271,14 @@ void functionEdit(struct task tasks[], int nTasks){    //use same layout as user
             }
         puts("");
         printf("%-21s", " ");
-        for(today; today < dependencies + 1; today++){  //loop through months using enum
+        for(today; today < dependencies + 1; today++){
 
         switch(today){
                         case(january):
-                            printf("%-10s","|January"); // print each month with correct layout
+                            printf("%-10s","|January");
                             break;
                         case(february):
-                            printf("%-10s","|February"); // -10s means that there will be equal spacing between months
+                            printf("%-10s","|February");
                             break;
                         case(march):
                             printf("%-10s","|March");
@@ -370,7 +329,7 @@ void functionEdit(struct task tasks[], int nTasks){    //use same layout as user
             int segment = 160;
             enum month today;
 
-            for(int i = 0; i < (int) segment; i++){ // print separating line
+            for(int i = 0; i < (int) segment; i++){
                         printf("-");
                     }
 
@@ -378,33 +337,36 @@ void functionEdit(struct task tasks[], int nTasks){    //use same layout as user
 
             for(int i = 0; i < nTasks; i++){
                 printf("\n");
-                printf("%-21s", tasks[i].taskName); // print task name with correct layout
+                printf("%-21s", tasks[i].taskName);
                 for(today = january; today < dependencies; today++){
-                    if (tasks[i].startMonth - 1 == today){ // if task starts here
-                        printf("%-10s","|   XXX");		   // print 'XXX' in corresponding box
-                        while(tasks[i].startMonth != tasks[i].endMonth){ //until it reaches end month
+                    if (tasks[i].startMonth - 1 == today){
+                        printf("%-10s","|   XXX");
+                        while(tasks[i].startMonth != tasks[i].endMonth){
                         printf("%-10s","|   XXX");
                         today++;
                         tasks[i].startMonth++;
                         }
                     }
-                    else {printf("%-10s","|");} //else print empty box
+                    else {printf("%-10s","|");}
                 }
                 printf("| ");
                 if(tasks[i].numDependencies > 0){
                     for(int j = 0; j < tasks[i].numDependencies; j++){
-                        printf("%d ", tasks[i].dependentTasks[j]); // print which tasks it is dependent on
+                        printf("%d ", tasks[i].dependentTasks[j]);
                     }
                 }
 
                 puts("");
                 for(int i = 0; i < (int) segment; i++){
-                                    printf("-"); //line at bottom
+                                    printf("-");
                                 }
+
+
+                /*TO COMPLETE: Counting the underscores will help to print the "|"
+                 * I am thinking about a blank struct for that as well
+                 */
             }
     }
-
-
   int menuFunction(struct task tasks[], int nTasks){
     int userChoice;
         printf("enter 1 to edit the Gantt, 2 to test if your Gantt is possible, 3 to quit:\n");
@@ -423,24 +385,24 @@ void functionEdit(struct task tasks[], int nTasks){    //use same layout as user
                 else if(!functionTest(tasks, nTasks)){
                     printf("Gantt not possible due to circular dependency\n");
                     fflush(stdout);
-                    return menuFunction(tasks, nTasks); // allow user to edit if circular dependency found
+                    return menuFunction(tasks, nTasks);
                 }
                 break;
             case 3:
-                printf("leaving program\n");
+                printf("leaving programme\n");
                 return 0;
             default:
                 break;
         }
   }
 
-    /*void ascii_art(){
+    void ascii_art_andrew(){
     	 int ascii = 0;
     	    printf("\n\nenter 1 to see ascii art");
     	    fflush(stdout);
     	    scanf("%d", ascii);
     	if (ascii == 1){
-    	  printf("⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠿⠿⠿⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿\n"          //lightning mcqueen!!!
+    	  printf("⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠿⠿⠿⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿\n"
     	                  "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠋⣉⣁⣤⣤⣶⣾⣿⣿⣶⡄⢲⣯⢍⠁⠄⢀⢹⣿\n"
     	                  "⣿⣿⣿⣿⣿⣿⣿⣿⣿⢯⣾⣿⣿⣏⣉⣹⠿⠇⠄⠽⠿⢷⡈⠿⠇⣀⣻⣿⡿⣻\n"
     	                  "⣿⣿⡿⠿⠛⠛⠛⢛⡃⢉⢣⡤⠤⢄⡶⠂⠄⠐⣀⠄⠄⠄⠄⠄⡦⣿⡿⠛⡇⣼\n"
@@ -453,4 +415,19 @@ void functionEdit(struct task tasks[], int nTasks){    //use same layout as user
     	                  );
 
     }
-    }*/
+    }
+    void checkTest(int end, int test){
+    	do {
+    	    scanf("%d", &test);
+    	    } while(test < 1 || test > 2);
+    	    if(test == 1){
+    	        exampleFunction(example);
+
+    	        do{printf("\nenter 1 to make your Gantt or 2 to exit:\n");
+    	        fflush(stdout);
+    	        scanf("%d", &end);
+    	        } while(end < 1 || end > 2);
+
+
+    	    }
+    }
