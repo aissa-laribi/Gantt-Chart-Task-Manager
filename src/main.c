@@ -18,15 +18,18 @@ struct task
     int dependentTasks[9];
 };
 
-
+void ascii_art();
 void functionEdit(struct task tasks[], int nTasks);
 bool functionTest (struct task tasks[], int nTasks);
 bool hasCircularDependency(struct task tasks[], int nTasks, int taskIndex, bool visited[]);
 void printFunction(struct task tasks[], int ntasks);
 void printMonths();
 void exampleFunction(struct task example[]);
+int testOrCreate(int end, int test);
+int getNumberOfTasks(int nTasks);
+void getNameStartEndDependencies(struct task tasks[],int nTasks);
 int menuFunction(struct task tasks[], int nTasks);
-void ascii_art();
+
 
 
 struct task example[]={                 //initialise example task struct
@@ -46,129 +49,148 @@ struct task example[]={                 //initialise example task struct
 
 
 
-
+static int nTasks = 0;
 
 int main(void){
-    int end = 0;
+
+	int end = 0;
     int test = 0;
 
-    printf("Welcome to Gantt generator\npress 1 to see an example of a Gantt or 2 to create your own:\n");
-    fflush(stdout);
-    do {
-    scanf("%d", &test);
-    } while(test < 1 || test > 2);
-    if(test == 1){
-        exampleFunction(example);
 
-        do{printf("\nenter 1 to make your Gantt or 2 to exit:\n");
-        fflush(stdout);
-        scanf("%d", &end);
-        } while(end < 1 || end > 2);
-        if (end == 2){
-            return 0;
-        }
+    /*testOrCreate is a function that welcomes the user to the program.
+     * Then, it asks the user if he wants to see an example by pressing 1
+     * or 2 to quit. This function returns the value of end if 1 continue, if 2 go to the end of the program*/
+    if(testOrCreate(end, test) != 2){
 
-    }
 
-    int nTasks;
-
-    /* Force the user to enter a valid number
-     * of tasks */
-    do{
-        printf("enter number of tasks:\n");
-        fflush(stdout);
-        scanf("%d", &nTasks);
-        if(nTasks > 10 || nTasks < 1){
-            printf("Please enter at least 1 task and at most 10 tasks\n");
-            fflush(stdout);}
-    } while(nTasks > 10 || nTasks < 1);
-    /* TODO: Ensuring if the user enters characters that it woill not loop indefinitely */
-
-    struct task tasks[nTasks];  /* Array of tasks Suggestion creating a blank struct such as in lecture 11 page 10: struct task
+    	struct task tasks[nTasks];  /* Array of tasks Suggestion creating a blank struct such as in lecture 11 page 10: struct task
                                 blank = "", 0, 0 , 0 , 0 */
 
-    /*Create a blank task*/
-    struct task blank = { " ", 0 , 0, 0, {0}};
+        /*Create a blank task*/
+    	struct task blank = { " ", 0 , 0, 0, {0}};
 
-    /*Initialize all the tasks with blank*/
-    for(int i = 0; i < nTasks; i++){
-        tasks[i] = blank;
+        /*Initialize all the tasks with blank*/
+    	for(int i = 0; i < nTasks; i++){
+    		tasks[i] = blank;
     }
+    	nTasks = getNumberOfTasks(nTasks);
+    	getNameStartEndDependencies(tasks, nTasks);
+    	menuFunction(tasks, nTasks);
 
-    for(int i = 0; i < nTasks; i++){
-        /*To enforce the user of not entering more than 20 characters and avoid a security flaw
-         * is trickier and this is what the last lecture was about maybe we could add a to do
-         * TODO: Ensuring the user does not exceed 20 characters to avoid a security breach */
-
-        printf("Enter the task name (max 20 characters)\n");
-        fflush(stdout);
-        scanf("%s", tasks[i].taskName);
-
-        /*Force the user to enter a valid starting month*/
-
-        do{
-            printf("Enter start month:\n");
-            fflush(stdout);
-            scanf("%d", &tasks[i].startMonth);
-            if(tasks[i].startMonth > 12 || tasks[i].startMonth < 1){
-                printf("number must be between 1 and 12\n");
-                fflush(stdout);
-            }
-        } while(tasks[i].startMonth > 12 || tasks[i].startMonth < 1);
-
-        /*Force the user to enter a valid ending month*/
-
-        do{
-            printf("Enter end month:\n");
-            fflush(stdout);
-            scanf("%d", &tasks[i].endMonth);
-            if(tasks[i].endMonth > 12 || tasks[i].endMonth < 1){
-                printf("number must be between 1 and 12\n");
-                fflush(stdout);
-            }
-        } while(tasks[i].endMonth > 12 || tasks[i].endMonth < 1 || tasks[i].endMonth < tasks[i].startMonth); // had start month instead of end month and added last case
-
-        printf("Enter number of dependencies:\n");
-        fflush(stdout);
-        scanf("%d", &tasks[i].numDependencies);
-
-        if(tasks[i].numDependencies > nTasks - 1){
-            printf("must be less than number of tasks\n");
-            fflush(stdout);
-            printf("Enter number of dependencies:\n");
-            fflush(stdout);
-            scanf("%d", &tasks[i].numDependencies);
-        }
-
-        for(int j = 0; j < tasks[i].numDependencies; j++){
-            printf("Enter dependency:\n");
-            fflush(stdout);
-            scanf("%d", &tasks[i].dependentTasks[j]);
-            if(tasks[i].dependentTasks[j] > nTasks){
-                printf("must be less than number of tasks\n");
-                fflush(stdout);
-                printf("Enter dependency:\n");
-                fflush(stdout);
-                scanf("%d", &tasks[i].dependentTasks[j]);
-            }
-        }
+    } else{
+    	ascii_art();
+    	return 0;
     }
-    menuFunction(tasks, nTasks);
-
-    printMonths();
-    printFunction(tasks, nTasks);
-
-
-
-    ascii_art();
-
     return 0;
     }
 
 
+int testOrCreate(int end, int test){
 
+	  /*End and test are always initialized to 0 in case the user uses this function more than one time*/
+	  test = 0;
+	  end = 0;
+	  printf("Welcome to Gantt generator\npress 1 to see an example of a Gantt or 2 to create your own:\n");
+	  fflush(stdout);
+	  do {
+	      scanf("%d", &test);
+	      }
+	  while(test < 1 || test > 2);
 
+	  if(test == 1){
+	          exampleFunction(example);
+	      }
+	  if(test == 2){
+		  return end; /* At this stage end = 0 and will be used to decide if we keep proceeding further*/
+	  }
+	  do{
+	     printf("\nenter 1 to make your Gantt or 2 to exit:\n");
+	     fflush(stdout);
+	     scanf("%d", &end);
+	     } while(end < 1 || end > 2);
+	      	if(end == 2){
+	      		printf("leaving program\n");
+	      		return end;
+	      	} else if(end == 1){
+	      		return end;
+	      	}
+}
 
+int getNumberOfTasks(int nTasks){
+	/* Force the user to enter a valid number
+	     * of tasks */
+
+	    do{
+	        printf("enter number of tasks:\n");
+	        fflush(stdout);
+	        scanf("%d", &nTasks);
+	        if(nTasks > 10 || nTasks < 1){
+	            printf("Please enter at least 1 task and at most 10 tasks\n");
+	            fflush(stdout);}
+	    } while(nTasks > 10 || nTasks < 1);
+	    /* TODO: Ensuring if the user enters characters that it will not loop indefinitely */
+	    return nTasks;
+}
+void getNameStartEndDependencies(struct task tasks[],int nTasks){
+	for(int i = 0; i < nTasks; i++){
+	        /*To enforce the user of not entering more than 20 characters and avoid a security flaw
+	         * is trickier and this is what the last lecture was about maybe we could add a to do
+	         * TODO: Ensuring the user does not exceed 20 characters to avoid a security breach */
+
+	        printf("Enter the task name (max 20 characters)\n");
+	        fflush(stdout);
+	        scanf("%s", tasks[i].taskName);
+
+	        /*Force the user to enter a valid starting month*/
+
+	        do{
+	            printf("Enter start month:\n");
+	            fflush(stdout);
+	            scanf("%d", &tasks[i].startMonth);
+	            if(tasks[i].startMonth > 12 || tasks[i].startMonth < 1){
+	                printf("number must be between 1 and 12\n");
+	                fflush(stdout);
+	            }
+	        } while(tasks[i].startMonth > 12 || tasks[i].startMonth < 1);
+
+	        /*Force the user to enter a valid ending month*/
+
+	        do{
+	            printf("Enter end month:\n");
+	            fflush(stdout);
+	            scanf("%d", &tasks[i].endMonth);
+	            if(tasks[i].endMonth > 12 || tasks[i].endMonth < 1){
+	                printf("number must be between 1 and 12\n");
+	                fflush(stdout);
+	            }
+	        } while(tasks[i].endMonth > 12 || tasks[i].endMonth < 1 || tasks[i].endMonth < tasks[i].startMonth); // had start month instead of end month and added last case
+
+	        printf("Enter number of dependencies:\n");
+	        fflush(stdout);
+	        scanf("%d", &tasks[i].numDependencies);
+
+	        if(tasks[i].numDependencies > nTasks - 1){
+	            printf("must be less than number of tasks\n");
+	            fflush(stdout);
+	            printf("Enter number of dependencies:\n");
+	            fflush(stdout);
+	            scanf("%d", &tasks[i].numDependencies);
+	        }
+
+	        for(int j = 0; j < tasks[i].numDependencies; j++){
+	            printf("Enter dependency:\n");
+	            fflush(stdout);
+	            scanf("%d", &tasks[i].dependentTasks[j]);
+	            if(tasks[i].dependentTasks[j] > nTasks){
+	                printf("must be less than number of tasks\n");
+	                fflush(stdout);
+	                printf("Enter dependency:\n");
+	                fflush(stdout);
+	                scanf("%d", &tasks[i].dependentTasks[j]);
+	            }
+	        }
+	    }
+}
 bool functionTest (struct task tasks[], int nTasks){
     bool visited[nTasks]; //array to track which tasks have been checked
     // Initialize all elements in array to false as none have been visited
@@ -235,7 +257,7 @@ void functionEdit(struct task tasks[], int nTasks){    //use same layout as user
             tasks[taskToChange] = blank;
             printf("Enter the new task name (max 20 characters)\n");
             fflush(stdout);
-            scanf("%s", &tasks[taskToChange].taskName);
+            scanf("%s", tasks[taskToChange].taskName);
 
 
             do{
@@ -308,7 +330,7 @@ void functionEdit(struct task tasks[], int nTasks){    //use same layout as user
             }
         puts("");
         printf("%-21s", " ");
-        for(today; today < dependencies + 1; today++){  //loop through months using enum
+        for(; today < dependencies + 1; today++){  //loop through months using enum
 
         switch(today){
                         case(january):
@@ -362,60 +384,61 @@ void functionEdit(struct task tasks[], int nTasks){    //use same layout as user
 
     }
     void printFunction(struct task tasks[], int nTasks){
-            /*Length of line*/
-            int segment = 160;
-            enum month today;
+                /*Length of line*/
+                int segment = 160;
+                enum month today;
 
-            for(int i = 0; i < (int) segment; i++){ // print separating line
-                        printf("-");
+                for(int i = 0; i < (int) segment; i++){ // print separating line
+                            printf("-");
+                        }
+
+
+
+                for(int i = 0; i < nTasks; i++){
+                    printf("\n");
+                    printf("%-21s", tasks[i].taskName); // print task name with correct layout
+                    for(today = january; today < dependencies; today++){
+                        if (today >= tasks[i].startMonth - 1 && today < tasks[i].endMonth ){ // if task starts here
+                            printf("%-10s","|   XXX");         // print 'XXX' in corresponding box
+                        }
+                       else{ //until it reaches end month
+                            printf("%-10s","|      ");
+                            }
                     }
-
-
-
-            for(int i = 0; i < nTasks; i++){
-                printf("\n");
-                printf("%-21s", tasks[i].taskName); // print task name with correct layout
-                for(today = january; today < dependencies; today++){
-                    if (tasks[i].startMonth - 1 == today){ // if task starts here
-                        printf("%-10s","|   XXX");         // print 'XXX' in corresponding box
-                        while(tasks[i].startMonth != tasks[i].endMonth){ //until it reaches end month
-                        printf("%-10s","|   XXX");
-                        today++;
-                        tasks[i].startMonth++;
+                    printf("| ");
+                    if(tasks[i].numDependencies > 0){
+                        for(int j = 0; j < tasks[i].numDependencies; j++){
+                            printf("%d ", tasks[i].dependentTasks[j]); // print which tasks it is dependent on
                         }
                     }
-                    else {printf("%-10s","|");} //else print empty box
-                }
-                printf("| ");
-                if(tasks[i].numDependencies > 0){
-                    for(int j = 0; j < tasks[i].numDependencies; j++){
-                        printf("%d ", tasks[i].dependentTasks[j]); // print which tasks it is dependent on
-                    }
-                }
 
-                puts("");
-                for(int i = 0; i < (int) segment; i++){
-                                    printf("-"); //line at bottom
-                                }
-            }
-    }
+                    puts("");
+                    for(int i = 0; i < (int) segment; i++){
+                                        printf("-"); //line at bottom
+                                    }
+                }
+        }
+
+
 
 
   int menuFunction(struct task tasks[], int nTasks){
-    int userChoice;
-        printf("enter 1 to edit the Gantt, 2 to test if your Gantt is possible, 3 to quit:\n");
+        int userChoice;
+        printf("enter 1 to edit the Gantt, 2 to test if your Gantt is possible, 3 to create a new chart, 4 to quit:\n");
         fflush(stdout);
         scanf("%d", &userChoice);
         switch (userChoice) {
             case 1:
                 functionEdit(tasks, nTasks);
                 return menuFunction(tasks, nTasks);
-                break;
             case 2:
                 if(functionTest(tasks, nTasks)){
                     printf("no circular dependencies found\n");
                     fflush(stdout);
-
+                    printMonths();
+                    printFunction(tasks, nTasks);
+                    puts("");
+                    return menuFunction(tasks, nTasks);
                 }
                 else if(!functionTest(tasks, nTasks)){
                     printf("Gantt not possible due to circular dependency\n");
@@ -424,20 +447,25 @@ void functionEdit(struct task tasks[], int nTasks){    //use same layout as user
                 }
                 break;
             case 3:
-                printf("leaving program\n");
-                return 0;
+            	        nTasks = getNumberOfTasks(nTasks);
+            	    	getNameStartEndDependencies(tasks, nTasks);
+            	    	menuFunction(tasks, nTasks);
+            case 4:
+            	ascii_art();
+                break;
             default:
                 break;
         }
+        return userChoice; /*A type int function should return an int to avoid a warning message*/
   }
 
     void ascii_art(){
-         int ascii = 0;
+        /*int ascii = 0;
             printf("\n\nenter 1 to see ascii art");
             fflush(stdout);
             scanf("%d", &ascii);
-        if (ascii == 1){
-          printf("⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠿⠿⠿⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿\n"          //lightning mcqueen!!!
+        if (ascii == 1){*/
+        printf("⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠿⠿⠿⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿\n"          /*lightning mcqueen!!!*/
                           "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠋⣉⣁⣤⣤⣶⣾⣿⣿⣶⡄⢲⣯⢍⠁⠄⢀⢹⣿\n"
                           "⣿⣿⣿⣿⣿⣿⣿⣿⣿⢯⣾⣿⣿⣏⣉⣹⠿⠇⠄⠽⠿⢷⡈⠿⠇⣀⣻⣿⡿⣻\n"
                           "⣿⣿⡿⠿⠛⠛⠛⢛⡃⢉⢣⡤⠤⢄⡶⠂⠄⠐⣀⠄⠄⠄⠄⠄⡦⣿⡿⠛⡇⣼\n"
@@ -449,6 +477,5 @@ void functionEdit(struct task tasks[], int nTasks){    //use same layout as user
                           "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿\n"
                           );
 
-    }
     }
 
