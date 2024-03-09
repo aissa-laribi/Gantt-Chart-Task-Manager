@@ -119,15 +119,17 @@ int testOrCreate(int end, int test){
 int getNumberOfTasks(int nTasks){
 	/* Force the user to enter a valid number
 	     * of tasks */
+		char buffer[1] = "";
 
 	    do{
+	    	nTasks = 0;
 	        printf("enter number of tasks:\n");
-	        fflush(stdout);
 	        scanf("%d", &nTasks);
-	        if(nTasks > 10 || nTasks < 1){
-	            printf("Please enter at least 1 task and at most 10 tasks\n");
-	            fflush(stdout);}
-	    } while(nTasks > 10 || nTasks < 1);
+	        printf("%d", nTasks);
+	        fflush(stdout);
+
+
+	    } while(nTasks > 10 || nTasks < 1 || nTasks == 0);
 	    /* TODO: Ensuring if the user enters characters that it will not loop indefinitely */
 	    return nTasks;
 }
@@ -460,8 +462,8 @@ void functionEdit(struct task tasks[], int nTasks){    //use same layout as user
   }
 
     void ascii_art(){
-        /*int ascii = 0;
-            printf("\n\nenter 1 to see ascii art");
+        int segment = 160;
+        /*printf("\n\nenter 1 to see ascii art");
             fflush(stdout);
             scanf("%d", &ascii);
         if (ascii == 1){*/
@@ -476,6 +478,42 @@ void functionEdit(struct task tasks[], int nTasks){    //use same layout as user
                           "⣿⣿⣷⣤⣤⣤⣤⣤⣤⣤⣤⣤⣤⣴⣶⣶⣶⣄⡀⠄⠈⠑⢙⣡⣴⣿⣿⣿⣿⣿\n"
                           "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿\n"
                           );
-
+        printf("			                    ##############                       \n" /*Pacman*/
+        	   "			                  ##################                     \n"
+        	   "			               ########################                  \n"
+               "			              ##########################                 \n"
+               "			              ################### ######                 \n"
+               "			             ############################                \n"
+               "			             ############################                \n"
+               "			            ###########################                  \n"
+               "			            #######################   ***                \n"
+        	   "			            ####################     *****               \n"
+        	   "			            ####################     *****               \n"
+         	   "			            #######################   ***                \n"
+          	   "			            ##########################                   \n"
+           	   "			             ###########################                 \n"
+               "			             ###########################                 \n"
+               "			              #########################                  \n"
+               "			              #########################                  \n"
+               "			               #######################                   \n"
+               "			                 ###################                     \n"
+               "			                   ###############                       \n"
+        );
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
