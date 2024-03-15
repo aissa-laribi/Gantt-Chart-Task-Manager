@@ -45,10 +45,6 @@ struct task example[]={                 //initialise example task struct
         {"set_up_civilization", 12, 12, 2, {8, 9}}
         };
 
-
-
-
-
 static int nTasks = 0;
 
 int main(void){
@@ -78,12 +74,10 @@ int main(void){
     	menuFunction(tasks, nTasks);
 
     } else{
-    	ascii_art();
     	return 0;
     }
     return 0;
     }
-
 
 int testOrCreate(int end, int test){
 
@@ -119,13 +113,12 @@ int testOrCreate(int end, int test){
 int getNumberOfTasks(int nTasks){
 	/* Force the user to enter a valid number
 	     * of tasks */
-		char buffer[1] = "";
+
 
 	    do{
 	    	nTasks = 0;
 	        printf("enter number of tasks:\n");
 	        scanf("%d", &nTasks);
-	        printf("%d", nTasks);
 	        fflush(stdout);
 
 
@@ -234,17 +227,11 @@ bool hasCircularDependency(struct task tasks[], int nTasks, int taskIndex, bool 
     return false;
 }
 
-
-
-
-
 void exampleFunction (struct task example[]){
     printMonths();  //print first line
     printFunction(example, 10); //print using example struct
 
 }
-
-
 
 void functionEdit(struct task tasks[], int nTasks){    //use same layout as user input function to edit task in array
     char change[20];
@@ -315,9 +302,6 @@ void functionEdit(struct task tasks[], int nTasks){    //use same layout as user
 
     }
 }
-
-
-
 
     void printMonths(){
         enum month today;
@@ -421,9 +405,6 @@ void functionEdit(struct task tasks[], int nTasks){    //use same layout as user
                 }
         }
 
-
-
-
   int menuFunction(struct task tasks[], int nTasks){
         int userChoice;
         printf("enter 1 to edit the Gantt, 2 to test if your Gantt is possible, 3 to create a new chart, 4 to quit:\n");
@@ -462,7 +443,7 @@ void functionEdit(struct task tasks[], int nTasks){    //use same layout as user
   }
 
     void ascii_art(){
-        int segment = 160;
+        /*int segment = 160;*/
         /*printf("\n\nenter 1 to see ascii art");
             fflush(stdout);
             scanf("%d", &ascii);
